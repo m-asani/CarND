@@ -79,22 +79,20 @@ class WaypointUpdater(object):
             wp1 = i
         return dist
 
-     def find_fwd_waypoints(self, waypoints, pose, LOOKAHEAD_WPS):
-        dist = 0
-	fwd_waypoints = []
-	for i in range(0, len(waypoints)):
-	
-            dw = lambda a: math.sqrt((a.x)**2 + (a.y)**2  + (a.z)**2)
-	    dp = lambda b: math.sqrt((b.x)**2 + (b.y)**2  + (b.z)**2)
-        
-            waypoint_posn = dw(waypoints[i].pose.pose.position)
+
+    def find_fwd_waypoints(self, waypoints, pose, LOOKAHEAD_WPS):
+         dist = 0
+	 fwd_waypoints = []
+	 dw = lambda a: math.sqrt((a.x)**2 + (a.y)**2  + (a.z)**2)
+	 dp = lambda b: math.sqrt((b.x)**2 + (b.y)**2  + (b.z)**2)
+	 for i in range(0, len(waypoints)):
+	    waypoint_posn = dw(waypoints[i].pose.pose.position)
 	    pose_posn = dp(pose.pose.position)
+            if ((waypoint_posn - pose_posn) > 0 and (len(fwd_waypoints) < LOOKAHEAD_WPS)):
+		 fwd_waypoints.append(waypoints[i])
+         return fwd_waypoints
 
-            while ((waypoint_posn - pose_posn) > 0 and len(fwd_waypoints < LOOKAHEAD_WPS):
-		fwd_waypoints.append(waypoints[i])
-        return fwd_waypoints
-
-     def publish(self, waypoints):
+    def publish(self, waypoints):
         lane = Lane()
         #lane.header.frame_id = '/world'
         #lane.header.stamp = rospy.Time(0)
